@@ -1,6 +1,4 @@
-﻿
-
-namespace Wondwear.Infrastructure;
+﻿namespace Wondwear.Infrastructure;
 
 public static class Dependencies
 {
@@ -11,11 +9,20 @@ public static class Dependencies
         services.AddTransient<IJwtProvider, JwtProvider>();
         services.AddTransient<TokenServices>();
 
-        string path = Path.Combine(
-           Directory.GetCurrentDirectory(),
-           "nursing-home-a0e5c-firebase-adminsdk-fbsvc-09dbce4e85.json"
-        );
-        FirebaseApp.Create(new AppOptions() { Credential = GoogleCredential.FromFile(path) });
+        var firebaseJson = Environment.GetEnvironmentVariable("FIREBASE_CREDENTIALS");
+
+        if (string.IsNullOrWhiteSpace(firebaseJson))
+        {
+            throw new Exception("FIREBASE_CREDENTIALS is missing.");
+        }
+
+        if (FirebaseApp.DefaultInstance == null)
+        {
+            FirebaseApp.Create(new AppOptions
+            {
+                Credential = GoogleCredential.FromJson(firebaseJson)
+            });
+        }
 
         services.AddDbContext<AppDbContext>(o =>
         {
@@ -31,11 +38,11 @@ public static class Dependencies
             options.Password.RequireNonAlphanumeric = false;
             options.User.AllowedUserNameCharacters = "1234567890abcedfghijklmnopqrstuvwxzyABCDEFGHIJKLMNOBQRSTUVWXZYabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ -أاإآلىئبتثجحخعغرزقفصضسشدذرزؤطظهكمنوية";
         })
-         .AddEntityFrameworkStores<AppDbContext>()
-         .AddDefaultTokenProviders();
+        .AddEntityFrameworkStores<AppDbContext>()
+        .AddDefaultTokenProviders();
 
         services.Configure<DataProtectionTokenProviderOptions>(op =>
-          op.TokenLifespan = TimeSpan.FromHours(6));
+            op.TokenLifespan = TimeSpan.FromHours(6));
 
         return services;
     }
