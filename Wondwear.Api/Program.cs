@@ -1,3 +1,7 @@
+using Wondwear.Api;
+using Wondwear.Application;
+using Wondwear.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "10000";
@@ -16,8 +20,6 @@ app.UseSwaggerUI(o =>
 {
     o.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
 });
-
-// app.UseHttpsRedirection();
 
 app.MapHub<AlertHub>("/hubs/Alert");
 app.UseStaticFiles();

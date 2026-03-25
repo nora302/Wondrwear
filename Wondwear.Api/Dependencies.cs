@@ -1,4 +1,4 @@
-﻿
+﻿using Microsoft.OpenApi.Models;
 
 namespace Wondwear.Api;
 
@@ -10,7 +10,6 @@ public static class Dependencies
         services.AddHttpContextAccessor();
         services.AddEndpointsApiExplorer();
 
-        // Customize CORS According To Your Needs
         services.AddCors(o =>
         {
             o.AddPolicy("Default", policy =>
@@ -21,10 +20,9 @@ public static class Dependencies
                 policy.SetPreflightMaxAge(TimeSpan.FromMinutes(10));
             });
         });
-        services.AddSwaggerGen();
+
         services.AddSwaggerGen(options =>
         {
-            // JWT Bearer Token Definition
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
@@ -33,8 +31,7 @@ public static class Dependencies
                 Type = SecuritySchemeType.ApiKey,
                 Scheme = "Bearer"
             });
-            
-            // Global Security Requirements for both JWT and API Key
+
             options.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -56,5 +53,4 @@ public static class Dependencies
 
         return services;
     }
-
 }

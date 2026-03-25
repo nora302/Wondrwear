@@ -1,4 +1,14 @@
-﻿namespace Wondwear.Infrastructure;
+﻿using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Wondwear.Domain.Entities;
+using Wondwear.Infrastructure.Database;
+using Wondwear.Infrastructure.Repository.Users;
+using Wondwear.Infrastructure.Services.JWT;
+using Wondwear.Infrastructure.Services.Push;
+
+namespace Wondwear.Infrastructure;
 
 public static class Dependencies
 {
@@ -16,7 +26,11 @@ public static class Dependencies
             throw new Exception("FIREBASE_CREDENTIALS is missing.");
         }
 
-        if (FirebaseApp.DefaultInstance == null)
+        try
+        {
+            _ = FirebaseApp.DefaultInstance;
+        }
+        catch
         {
             FirebaseApp.Create(new AppOptions
             {
@@ -36,7 +50,8 @@ public static class Dependencies
             options.Password.RequireLowercase = false;
             options.Password.RequireDigit = false;
             options.Password.RequireNonAlphanumeric = false;
-            options.User.AllowedUserNameCharacters = "1234567890abcedfghijklmnopqrstuvwxzyABCDEFGHIJKLMNOBQRSTUVWXZYabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ -أاإآلىئبتثجحخعغرزقفصضسشدذرزؤطظهكمنوية";
+            options.User.AllowedUserNameCharacters =
+                "1234567890abcedfghijklmnopqrstuvwxzyABCDEFGHIJKLMNOBQRSTUVWXZYabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ -أاإآلىئبتثجحخعغرزقفصضسشدذرزؤطظهكمنوية";
         })
         .AddEntityFrameworkStores<AppDbContext>()
         .AddDefaultTokenProviders();
