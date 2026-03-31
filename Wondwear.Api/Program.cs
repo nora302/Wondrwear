@@ -32,6 +32,13 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<AlertHub>("/hubs/Alert");
 
+// Redirection racine vers Swagger
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("/swagger/index.html");
+    return Task.CompletedTask;
+});
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
