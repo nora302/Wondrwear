@@ -1,6 +1,4 @@
-﻿
-
-using Notification = Wondwear.Domain.Entities.Notification;
+﻿using Notification = Wondwear.Domain.Entities.Notification;
 
 namespace Wondwear.Infrastructure.Database.Configuration;
 
@@ -9,7 +7,10 @@ public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
     public void Configure(EntityTypeBuilder<Notification> builder)
     {
         builder.HasKey(b => b.Id);
-        builder.Property(b => b.Id).UseIdentityColumn().ValueGeneratedOnAdd();
+
+        // ✅ Correction PostgreSQL
+        builder.Property(b => b.Id).ValueGeneratedOnAdd();
+
         builder.Property(n => n.Title).HasMaxLength(1000).IsRequired(true);
         builder.Property(n => n.Body).HasMaxLength(1000).IsRequired(true);
 
@@ -23,6 +24,7 @@ public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
         {
             u.UserId
         });
+
         builder.ToTable(nameof(Notification));
     }
 }

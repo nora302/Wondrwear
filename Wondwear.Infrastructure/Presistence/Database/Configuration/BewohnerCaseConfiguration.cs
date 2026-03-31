@@ -1,6 +1,4 @@
-﻿
-
-using Notification = Wondwear.Domain.Entities.Notification;
+﻿using Notification = Wondwear.Domain.Entities.Notification;
 
 namespace Wondwear.Infrastructure.Database.Configuration;
 
@@ -9,7 +7,10 @@ public class BewohnerCaseConfiguration : IEntityTypeConfiguration<BewohnerCase>
     public void Configure(EntityTypeBuilder<BewohnerCase> builder)
     {
         builder.HasKey(b => b.Id);
-        builder.Property(b => b.Id).UseIdentityColumn(1, 1).ValueGeneratedOnAdd();
+
+        // ✅ Correction PostgreSQL (suppression UseIdentityColumn)
+        builder.Property(b => b.Id).ValueGeneratedOnAdd();
+
         builder.HasOne(n => n.Bewohner)
                .WithMany(u => u.Cases)
                .HasForeignKey(u => u.BewohnerId)
@@ -26,6 +27,7 @@ public class BewohnerCaseConfiguration : IEntityTypeConfiguration<BewohnerCase>
         {
             u.BewohnerId
         });
+
         builder.ToTable(nameof(BewohnerCase));
     }
 }

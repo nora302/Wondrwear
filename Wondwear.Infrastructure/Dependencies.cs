@@ -41,7 +41,7 @@ public static class Dependencies
         services.AddDbContext<AppDbContext>(o =>
         {
             o.UseLazyLoadingProxies();
-            o.UseSqlServer(configuration.GetConnectionString("Default"));
+            o.UseNpgsql(configuration.GetConnectionString("Default"));
         })
         .AddIdentity<User, IdentityRole<int>>(options =>
         {
